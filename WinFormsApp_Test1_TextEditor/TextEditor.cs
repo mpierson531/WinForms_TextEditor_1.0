@@ -22,7 +22,7 @@ namespace WinFormsApp_Test1_TextEditor
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
                     Title = "Choose A File To Open",
-                    InitialDirectory = Directory.GetCurrentDirectory()
+                    InitialDirectory = inputDirectory
                 };
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -40,6 +40,7 @@ namespace WinFormsApp_Test1_TextEditor
             {
                 try
                 {
+                    Directory.SetCurrentDirectory(inputDirectory);
                     textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
                     textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
@@ -57,8 +58,9 @@ namespace WinFormsApp_Test1_TextEditor
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Title = "Save File As",
-                    InitialDirectory = Directory.GetCurrentDirectory()
-                };
+                    InitialDirectory = inputDirectory
+                //InitialDirectory = Directory.GetCurrentDirectory()
+            };
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -74,6 +76,7 @@ namespace WinFormsApp_Test1_TextEditor
             {
                 try
                 {
+                    Directory.SetCurrentDirectory(inputDirectory);
                     textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
                     textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
@@ -90,6 +93,7 @@ namespace WinFormsApp_Test1_TextEditor
             {
                 try
                 {
+                    Directory.SetCurrentDirectory(inputDirectory);
                     FileStream stream = File.OpenRead(fileNameField.Text);
                     textAreaBox.Text = File.ReadAllText(fileNameField.Text);
                     stream.Close();
@@ -103,7 +107,7 @@ namespace WinFormsApp_Test1_TextEditor
             {
                 /*defaultDirectory = Directory.GetCurrentDirectory();
                 Properties.Settings.Default.DefaultDirectory = defaultDirectory;*/
-                Properties.Settings.Default.Save();
+                //Properties.Settings.Default.Save();
                 System.Environment.Exit(0);
             }
         }
@@ -194,12 +198,19 @@ namespace WinFormsApp_Test1_TextEditor
         {
             try
             {
-                inputDirectory = @Interaction.InputBox("Enter a directory", "Change Directory", "");
-                Directory.SetCurrentDirectory(inputDirectory);
-                Properties.Settings.Default.InputDirectory = inputDirectory;
+                inputDirectory = Interaction.InputBox(@"Enter a directory", "Change Directory", "");
+                Directory.SetCurrentDirectory(@inputDirectory);
+                Properties.Settings.Default.InputDirectory = @inputDirectory;
                 Properties.Settings.Default.Save();
             }
-            catch (ArgumentException) { }
+            catch (Exception ae)
+            {
+                textAreaBox.Text = ae.Source.ToString() + ": " + ae.InnerException + " " + ae.Message;
+                if (ae is null)
+                {
+                    textAreaBox.Text = "Exception ae is null";
+                }
+            }
         }
 
         private void lineCharacterCountFontToolStripMenuItem_Click(object sender, EventArgs e)
@@ -229,29 +240,37 @@ namespace WinFormsApp_Test1_TextEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            directoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            defaultDirectory = directoryInfo.FullName + @"\Text Editor Files";
-            defaultDirectoryInfo = new DirectoryInfo(defaultDirectory);
+            try
+            {
+                directoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+                defaultDirectory = directoryInfo.FullName + @"\Text Editor Files";
+                defaultDirectoryInfo = new DirectoryInfo(defaultDirectory.ToString());
 
-            if (defaultDirectoryInfo.Exists == false)
+                if (defaultDirectoryInfo.Exists == false)
+                {
+                    Directory.CreateDirectory(defaultDirectory);
+                    Properties.Settings.Default.DefaultDirectory = defaultDirectory;
+                    Properties.Settings.Default.InputDirectory = Properties.Settings.Default.DefaultDirectory;
+                    Properties.Settings.Default.Save();
+                    Directory.SetCurrentDirectory(defaultDirectory);
+                    inputDirectory = Properties.Settings.Default.InputDirectory;
+                }
+                else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
+                {
+                    inputDirectory = Properties.Settings.Default.InputDirectory;
+                    Directory.SetCurrentDirectory(inputDirectory);
+                }
+            } catch (Exception ex)
             {
-                Directory.CreateDirectory(defaultDirectory);
-                Properties.Settings.Default.DefaultDirectory = defaultDirectory;
-                Properties.Settings.Default.InputDirectory = Properties.Settings.Default.DefaultDirectory;
-                Properties.Settings.Default.Save();
-                Directory.SetCurrentDirectory(defaultDirectory);
-            } else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
-            {
-                inputDirectory = Properties.Settings.Default.InputDirectory;
-                Directory.SetCurrentDirectory(inputDirectory);
+                textAreaBox.Text = ex.Message;
             }
         }
 
         private void WhenTheFormIsClosing(object sender, FormClosingEventArgs e)
         {
             /*defaultDirectory = Directory.GetCurrentDirectory();
-            Properties.Settings.Default.DefaultDirectory = defaultDirectory;*/
-            Properties.Settings.Default.Save();
+            Properties.Settings.Default.DefaultDirectory = defaultDirectory;
+            Properties.Settings.Default.Save();*/
         }
     }
 }
