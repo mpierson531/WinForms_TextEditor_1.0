@@ -50,6 +50,7 @@
             this.lineCountLabel = new System.Windows.Forms.Label();
             this.characterCountLabel = new System.Windows.Forms.Label();
             this.changeDirectoryButton = new System.Windows.Forms.Button();
+            this.mouseDrawingButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,10 +62,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textAreaBox.AutoWordSelection = true;
             this.textAreaBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textAreaBox.Location = new System.Drawing.Point(12, 30);
+            this.textAreaBox.Location = new System.Drawing.Point(10, 28);
             this.textAreaBox.Margin = new System.Windows.Forms.Padding(1);
             this.textAreaBox.Name = "textAreaBox";
-            this.textAreaBox.Size = new System.Drawing.Size(1176, 505);
+            this.textAreaBox.Size = new System.Drawing.Size(1170, 509);
             this.textAreaBox.TabIndex = 0;
             this.textAreaBox.Text = "Type Here";
             this.textAreaBox.TextChanged += new System.EventHandler(this.textAreaBox_TextChanged);
@@ -249,7 +250,7 @@
             this.changeDirectoryButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.changeDirectoryButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.changeDirectoryButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.changeDirectoryButton.Location = new System.Drawing.Point(800, 0);
+            this.changeDirectoryButton.Location = new System.Drawing.Point(770, 0);
             this.changeDirectoryButton.Margin = new System.Windows.Forms.Padding(1);
             this.changeDirectoryButton.Name = "changeDirectoryButton";
             this.changeDirectoryButton.Size = new System.Drawing.Size(148, 28);
@@ -258,11 +259,25 @@
             this.changeDirectoryButton.UseVisualStyleBackColor = false;
             this.changeDirectoryButton.Click += new System.EventHandler(this.changeDirectoryButton_Click);
             // 
+            // mouseDrawingButton
+            // 
+            this.mouseDrawingButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.mouseDrawingButton.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.mouseDrawingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.mouseDrawingButton.Location = new System.Drawing.Point(0, 534);
+            this.mouseDrawingButton.Name = "mouseDrawingButton";
+            this.mouseDrawingButton.Size = new System.Drawing.Size(1200, 28);
+            this.mouseDrawingButton.TabIndex = 9;
+            this.mouseDrawingButton.Text = "Activate Mouse Drawing";
+            this.mouseDrawingButton.UseVisualStyleBackColor = false;
+            this.mouseDrawingButton.Click += new System.EventHandler(this.mouseDrawingButton_Click);
+            // 
             // TextEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 562);
+            this.Controls.Add(this.mouseDrawingButton);
             this.Controls.Add(this.changeDirectoryButton);
             this.Controls.Add(this.characterCountLabel);
             this.Controls.Add(this.lineCountLabel);
@@ -312,5 +327,6 @@
         private Label characterCountLabel;
         private Button changeDirectoryButton;
         private ToolStripMenuItem lineCharacterCountFontToolStripMenuItem;
+        private Button mouseDrawingButton;
     }
 }

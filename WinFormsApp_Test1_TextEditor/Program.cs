@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Diagnostics.Tracing;
-
 namespace WinFormsApp_Test1_TextEditor
 {
     internal static class Program
