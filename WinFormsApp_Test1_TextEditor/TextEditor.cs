@@ -66,9 +66,14 @@ public partial class TextEditor : Form
             {
                 try
                 {
-                    Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
-                    textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
-                    textAreaBox.Text = "Saved " + fileNameField.Text;
+                    
+                    Directory.SetCurrentDirectory(defaultDirectory);
+
+                    var fileSave = File.CreateText(fileNameField.Text + ".txt");
+                    fileSave.WriteLine(textAreaBox.Text);
+                    fileSave.Close();
+                    //textAreaBox.SaveFile(fileNameField.Text);
+                    //textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
                 catch (Exception ex) { Interaction.MsgBox("File name field is empty. " + ex.Message); }
             }
@@ -101,9 +106,7 @@ public partial class TextEditor : Form
     {
         if (sender == exitToolStripMenuItem)
         {
-            /*defaultDirectory = Directory.GetCurrentDirectory();
-            Properties.Settings.Default.DefaultDirectory = defaultDirectory;*/
-            //Properties.Settings.Default.Save();
+            
             System.Environment.Exit(0);
         }
     }
@@ -229,6 +232,7 @@ public partial class TextEditor : Form
     {
         Font fontFromDialog;
         FontDialog fontDialog;
+
         fontDialog = new FontDialog()
         {
             ShowEffects = true,
@@ -259,9 +263,9 @@ public partial class TextEditor : Form
                 Properties.Settings.Default.DefaultDirectory = defaultDirectory;
                 Properties.Settings.Default.InputDirectory = Properties.Settings.Default.DefaultDirectory;
                 Properties.Settings.Default.Save();
-                Directory.SetCurrentDirectory(defaultDirectory);
                 //inputDirectory = Properties.Settings.Default.InputDirectory;
             }
+                Directory.SetCurrentDirectory(defaultDirectory);
             /*else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
             {
                 inputDirectory = Properties.Settings.Default.InputDirectory;
