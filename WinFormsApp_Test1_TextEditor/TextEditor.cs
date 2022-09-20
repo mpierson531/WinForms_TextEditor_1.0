@@ -1,5 +1,6 @@
 using Microsoft.VisualBasic;
 using System.Configuration;
+using System.Text.Json;
 
 namespace WinFormsApp_Test1_TextEditor;
 
@@ -9,7 +10,6 @@ public partial class TextEditor : Form
     private string defaultDirectory;
     private DirectoryInfo directoryInfo;
     private DirectoryInfo defaultDirectoryInfo;
-    //public static TextEditor __textEditor { get; private set; } = _textEditor;
     public TextEditor()
     {
         InitializeComponent();
@@ -34,7 +34,6 @@ public partial class TextEditor : Form
 
     private void SaveMenuItem(object sender, EventArgs e)
     {
-        Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
         textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
         textAreaBox.Text = "Saved " + fileNameField.Text;
     }
@@ -66,14 +65,10 @@ public partial class TextEditor : Form
             {
                 try
                 {
-                    
-                    Directory.SetCurrentDirectory(defaultDirectory);
-
                     var fileSave = File.CreateText(fileNameField.Text + ".txt");
                     fileSave.WriteLine(textAreaBox.Text);
                     fileSave.Close();
-                    //textAreaBox.SaveFile(fileNameField.Text);
-                    //textAreaBox.Text = "Saved " + fileNameField.Text;
+                    textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
                 catch (Exception ex) { Interaction.MsgBox("File name field is empty. " + ex.Message); }
             }
@@ -88,7 +83,6 @@ public partial class TextEditor : Form
         {
             try
             {
-                Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
                 FileStream stream = File.OpenRead(fileNameField.Text);
                 textAreaBox.Text = File.ReadAllText(fileNameField.Text);
                 stream.Close();
@@ -101,12 +95,10 @@ public partial class TextEditor : Form
         }
     }
 
-
     private void ExitItem_Click(object sender, EventArgs e)
     {
         if (sender == exitToolStripMenuItem)
         {
-            
             System.Environment.Exit(0);
         }
     }
@@ -119,10 +111,12 @@ public partial class TextEditor : Form
             AllowScriptChange = true,
             ShowApply = true
         };
+
         if (fontDialog1.ShowDialog() == DialogResult.OK)
         {
             textAreaBox.Font = fontDialog1.Font;
         }
+
         fontDialog1.Dispose();
     }
 
@@ -139,6 +133,7 @@ public partial class TextEditor : Form
             AllowScriptChange = true,
             ShowApply = true
         };
+
         if (MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons) == DialogResult.Yes)
         {
             if (fontDialog1.ShowDialog() == DialogResult.OK)
@@ -199,8 +194,8 @@ public partial class TextEditor : Form
         {
             inputDirectory = Interaction.InputBox(@"Enter a directory", "Change Directory", "");
             Directory.SetCurrentDirectory(@inputDirectory);
-            Properties.Settings.Default.InputDirectory = inputDirectory;
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.InputDirectory = inputDirectory;
+            //Properties.Settings.Default.Save();
         }
         catch (ArgumentException)
         {
@@ -225,6 +220,7 @@ public partial class TextEditor : Form
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
         textAreaBox.Invalidate();
         graphics.DrawLine(pen1, MousePosition, MousePosition);
+
         // System.Drawing.Graphics.FromImage(textAreaBox.DrawToBitmap(bitmap = new Bitmap(5, 5), textAreaBox.Bounds););
     }
 
@@ -253,19 +249,37 @@ public partial class TextEditor : Form
     {
         try
         {
+            string serializedJson;
+            Directories directs;
             directoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            defaultDirectory = directoryInfo.FullName + @"\Text Editor Files";
-            defaultDirectoryInfo = new DirectoryInfo(defaultDirectory.ToString());
+            defaultDirectory = @directoryInfo.FullName + @"\Text Editor Files";
+            defaultDirectoryInfo = new DirectoryInfo(@defaultDirectory.ToString());
+            string jsonFilePath = @defaultDirectory + @"\config_file.json";
 
-            if (defaultDirectoryInfo.Exists == false)
+            directs = new Directories
+            {
+                DefaultDirectory = defaultDirectory
+            };
+
+            if (!defaultDirectoryInfo.Exists)
             {
                 Directory.CreateDirectory(defaultDirectory);
-                Properties.Settings.Default.DefaultDirectory = defaultDirectory;
-                Properties.Settings.Default.InputDirectory = Properties.Settings.Default.DefaultDirectory;
-                Properties.Settings.Default.Save();
-                //inputDirectory = Properties.Settings.Default.InputDirectory;
             }
-                Directory.SetCurrentDirectory(defaultDirectory);
+
+            if ((!File.Exists(jsonFilePath)) || (File.ReadAllText(jsonFilePath) == null || File.ReadAllText(jsonFilePath) == ""))
+            {
+                var createConfigFile = File.CreateText(jsonFilePath);
+                createConfigFile.Close();
+                serializedJson = JsonSerializer.Serialize<Directories>(directs, new JsonSerializerOptions() { WriteIndented = true });
+                File.WriteAllText(@jsonFilePath, @serializedJson);
+            }
+
+            string jsonFromFile = File.ReadAllText(jsonFilePath);
+            directs = JsonSerializer.Deserialize<Directories>(jsonFromFile);
+            System.Console.WriteLine(directs.DefaultDirectory);
+
+            Directory.SetCurrentDirectory(directs.DefaultDirectory);
+
             /*else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
             {
                 inputDirectory = Properties.Settings.Default.InputDirectory;
