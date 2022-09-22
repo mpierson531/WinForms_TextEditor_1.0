@@ -2,8 +2,6 @@ namespace WinFormsApp_Test1_TextEditor
 {
     internal static class Program
     {
-        public static TextEditor textEditor { get; set; }
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -18,7 +16,7 @@ namespace WinFormsApp_Test1_TextEditor
             //TextEditor textEditor1 = new TextEditor(__fileInterface);
             ApplicationConfiguration.Initialize();
 
-            textEditor = new TextEditor();
+            TextEditor textEditor = new TextEditor(new LocalStorageService());
 
             Application.Run(textEditor);
         }

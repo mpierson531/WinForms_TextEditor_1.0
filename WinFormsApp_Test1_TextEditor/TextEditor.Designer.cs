@@ -223,7 +223,7 @@
             this.lineCharacterCountFontToolStripMenuItem.Name = "lineCharacterCountFontToolStripMenuItem";
             this.lineCharacterCountFontToolStripMenuItem.Size = new System.Drawing.Size(292, 26);
             this.lineCharacterCountFontToolStripMenuItem.Text = "Line/Character Count Font";
-            this.lineCharacterCountFontToolStripMenuItem.Click += new System.EventHandler(this.lineCharacterCountFontToolStripMenuItem_Click);
+            this.lineCharacterCountFontToolStripMenuItem.Click += new System.EventHandler(this.lineCharacterCountFontMenuItem_Click);
             // 
             // lineCountLabel
             // 

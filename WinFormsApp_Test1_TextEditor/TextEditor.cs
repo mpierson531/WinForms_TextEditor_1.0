@@ -1,5 +1,4 @@
 using Microsoft.VisualBasic;
-using System.Configuration;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -7,6 +6,7 @@ namespace WinFormsApp_Test1_TextEditor;
 
 public partial class TextEditor : Form
 {
+    private IStorageService _service;
     private JsonInfo InfoJson;
     private string SerializedJson;
     private string inputDirectory;
@@ -14,9 +14,10 @@ public partial class TextEditor : Form
     private DirectoryInfo directoryInfo;
     private DirectoryInfo defaultDirectoryInfo;
     private JsonSerializerOptions OptionsForJson = new JsonSerializerOptions() { WriteIndented = true };
-    public TextEditor()
+    public TextEditor(LocalStorageService service)
     {
         InitializeComponent();
+        _service = service;
     }
 
     private void OpenMenuItem(object sender, EventArgs e)
@@ -29,16 +30,13 @@ public partial class TextEditor : Form
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
-            FileStream stream2 = File.OpenRead(openFileDialog.FileName);
-            fileNameField.Text = openFileDialog.FileName;
-            textAreaBox.Text = File.ReadAllText(openFileDialog.FileName);
-            stream2.Close();
+            textAreaBox.Text = _service.ReadFile(openFileDialog.FileName);
         }
     }
 
     private void SaveMenuItem(object sender, EventArgs e)
     {
-        textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
+        _service.WriteFile(fileNameField.Text, textAreaBox.Text);
         textAreaBox.Text = "Saved " + fileNameField.Text;
     }
 
@@ -49,13 +47,13 @@ public partial class TextEditor : Form
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Title = "Save File As",
-                InitialDirectory = inputDirectory
-                //InitialDirectory = Directory.GetCurrentDirectory()
+                InitialDirectory = Directory.GetCurrentDirectory(),
+                ValidateNames = true
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                textAreaBox.SaveFile(fileNameField.Text, RichTextBoxStreamType.PlainText);
+                _service.WriteFile(saveFileDialog.FileName, textAreaBox.Text);
                 textAreaBox.Text = "Saved " + fileNameField.Text;
             }
         }
@@ -69,9 +67,7 @@ public partial class TextEditor : Form
             {
                 try
                 {
-                    var fileSave = File.CreateText(fileNameField.Text + ".txt");
-                    fileSave.WriteLine(textAreaBox.Text);
-                    fileSave.Close();
+                    _service.WriteFile(fileNameField.Text, textAreaBox.Text);
                     textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
                 catch (Exception ex) { Interaction.MsgBox("File name field is empty. " + ex.Message); }
@@ -87,9 +83,7 @@ public partial class TextEditor : Form
         {
             try
             {
-                FileStream stream = File.OpenRead(fileNameField.Text);
-                textAreaBox.Text = File.ReadAllText(fileNameField.Text);
-                stream.Close();
+                textAreaBox.Text = _service.ReadFile($"{fileNameField.Text}.txt");
             }
             catch (ArgumentException ae) { Interaction.MsgBox("File name field is empty. " + ae.Message); }
         }
@@ -201,8 +195,6 @@ public partial class TextEditor : Form
             SerializedJson = JsonSerializer.Serialize<JsonInfo>(InfoJson, OptionsForJson);
             File.WriteAllText(@InfoJson.DefaultDirectory + @"\config_file.json", SerializedJson);
             Directory.SetCurrentDirectory(@InfoJson.InputDirectory);
-            //Properties.Settings.Default.InputDirectory = inputDirectory;
-            //Properties.Settings.Default.Save();
         }
         catch (ArgumentException)
         {
@@ -210,7 +202,7 @@ public partial class TextEditor : Form
         }
     }
 
-    private void lineCharacterCountFontToolStripMenuItem_Click(object sender, EventArgs e)
+    private void lineCharacterCountFontMenuItem_Click(object sender, EventArgs e)
     {
         FontDialogHelper();
     }
@@ -233,10 +225,7 @@ public partial class TextEditor : Form
 
     public void FontDialogHelper()
     {
-        Font fontFromDialog;
-        FontDialog fontDialog;
-
-        fontDialog = new FontDialog()
+        FontDialog fontDialog = new FontDialog()
         {
             ShowEffects = true,
             ShowApply = true,
@@ -246,7 +235,7 @@ public partial class TextEditor : Form
 
         if (fontDialog.ShowDialog() == DialogResult.OK)
         {
-            fontFromDialog = fontDialog.Font;
+            Font fontFromDialog = fontDialog.Font;
             lineCountLabel.Font = fontFromDialog;
             characterCountLabel.Font = fontFromDialog;
         }
@@ -292,13 +281,6 @@ public partial class TextEditor : Form
             {
                 Directory.SetCurrentDirectory(InfoJson.DefaultDirectory);
             }
-
-
-            /*else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
-            {
-                inputDirectory = Properties.Settings.Default.InputDirectory;
-                Directory.SetCurrentDirectory(inputDirectory);
-            } else { Interaction.MsgBox("Lines 233 - 254: first and second if statements: not happening"); }*/
         }
         catch (Exception ex)
         {
