@@ -1,15 +1,19 @@
 using Microsoft.VisualBasic;
 using System.Configuration;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace WinFormsApp_Test1_TextEditor;
 
 public partial class TextEditor : Form
 {
+    private JsonInfo InfoJson;
+    private string SerializedJson;
     private string inputDirectory;
     private string defaultDirectory;
     private DirectoryInfo directoryInfo;
     private DirectoryInfo defaultDirectoryInfo;
+    private JsonSerializerOptions OptionsForJson = new JsonSerializerOptions() { WriteIndented = true };
     public TextEditor()
     {
         InitializeComponent();
@@ -20,7 +24,7 @@ public partial class TextEditor : Form
         OpenFileDialog openFileDialog = new OpenFileDialog
         {
             Title = "Choose A File To Open",
-            InitialDirectory = inputDirectory
+            InitialDirectory = InfoJson.DefaultDirectory
         };
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -193,7 +197,10 @@ public partial class TextEditor : Form
         try
         {
             inputDirectory = Interaction.InputBox(@"Enter a directory", "Change Directory", "");
-            Directory.SetCurrentDirectory(@inputDirectory);
+            InfoJson.InputDirectory = inputDirectory;
+            SerializedJson = JsonSerializer.Serialize<JsonInfo>(InfoJson, OptionsForJson);
+            File.WriteAllText(@InfoJson.DefaultDirectory + @"\config_file.json", SerializedJson);
+            Directory.SetCurrentDirectory(@InfoJson.InputDirectory);
             //Properties.Settings.Default.InputDirectory = inputDirectory;
             //Properties.Settings.Default.Save();
         }
@@ -249,16 +256,16 @@ public partial class TextEditor : Form
     {
         try
         {
-            string serializedJson;
-            Directories directs;
+            JsonNode jsonNode;
             directoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             defaultDirectory = @directoryInfo.FullName + @"\Text Editor Files";
             defaultDirectoryInfo = new DirectoryInfo(@defaultDirectory.ToString());
             string jsonFilePath = @defaultDirectory + @"\config_file.json";
 
-            directs = new Directories
+            InfoJson = new JsonInfo
             {
-                DefaultDirectory = defaultDirectory
+                DefaultDirectory = defaultDirectory,
+                InputDirectory = string.Empty
             };
 
             if (!defaultDirectoryInfo.Exists)
@@ -270,15 +277,22 @@ public partial class TextEditor : Form
             {
                 var createConfigFile = File.CreateText(jsonFilePath);
                 createConfigFile.Close();
-                serializedJson = JsonSerializer.Serialize<Directories>(directs, new JsonSerializerOptions() { WriteIndented = true });
-                File.WriteAllText(@jsonFilePath, @serializedJson);
+                SerializedJson = JsonSerializer.Serialize<JsonInfo>(InfoJson, OptionsForJson);
+                File.WriteAllText(@jsonFilePath, SerializedJson);
             }
 
             string jsonFromFile = File.ReadAllText(jsonFilePath);
-            directs = JsonSerializer.Deserialize<Directories>(jsonFromFile);
-            System.Console.WriteLine(directs.DefaultDirectory);
+            InfoJson = JsonSerializer.Deserialize<JsonInfo>(jsonFromFile);
 
-            Directory.SetCurrentDirectory(directs.DefaultDirectory);
+            if (InfoJson.InputDirectory != null && InfoJson.InputDirectory != string.Empty)
+            {
+                Directory.SetCurrentDirectory(InfoJson.InputDirectory);
+            }
+            else if (InfoJson.InputDirectory == null || InfoJson.InputDirectory == string.Empty)
+            {
+                Directory.SetCurrentDirectory(InfoJson.DefaultDirectory);
+            }
+
 
             /*else if (Properties.Settings.Default.DefaultDirectory != Properties.Settings.Default.InputDirectory)
             {

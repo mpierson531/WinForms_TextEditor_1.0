@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinFormsApp_Test1_TextEditor
 {
-    public class Directories
+    public class JsonInfo
     {
         public string DefaultDirectory { get; set; }
         public string InputDirectory { get; set; }
