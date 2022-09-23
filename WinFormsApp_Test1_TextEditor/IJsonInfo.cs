@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace WinFormsApp_Test1_TextEditor
 {
-    public class IJsonInfo
+    public interface IJsonInfo
     {
+        public string DefaultDirectory { get; set; }
+        public string InputDirectory { get; set; }
 
+        public string Serialize(JsonSerializerOptions options);
+        public JsonInfo Deserialize(string jsonContent);
     }
 }
