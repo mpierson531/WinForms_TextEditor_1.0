@@ -11,14 +11,18 @@
             }
         }
 
-
         public void WriteFile(string filePath, string content)
         {
-            using (var fileSave = File.CreateText($"{filePath}.txt"))
+            using (var fileSave = this.CreateFile($"{filePath}.txt"))
             {
                 fileSave.WriteLine(content);
                 fileSave.Close();
             }
+        }
+
+        public StreamWriter CreateFile(string filePath)
+        {
+            return File.CreateText(filePath);
         }
     }
 }

@@ -265,13 +265,16 @@ public partial class TextEditor : Form
 
             if ((!File.Exists(jsonFilePath)) || /*(File.ReadAllText(jsonFilePath)*/ (_service.ReadFile(jsonFilePath) == null || /*File.ReadAllText(jsonFilePath)*/ _service.ReadFile(jsonFilePath) == ""))
             {
-                var createConfigFile = File.CreateText(jsonFilePath);
-                createConfigFile.Close();
+                using (var createConfigFile = _service.CreateFile(jsonFilePath))
+                {
+                    createConfigFile.Close();
+                }
+
                 SerializedJson = _jsonInfo.Serialize(OptionsForJson);
-                _service.WriteFile(@jsonFilePath, SerializedJson);
+                _service.WriteFile(jsonFilePath, SerializedJson);
             }
 
-            string jsonFromFile = File.ReadAllText(jsonFilePath);
+            string jsonFromFile = _service.ReadFile(jsonFilePath);
             _jsonInfo = _jsonInfo.Deserialize(jsonFromFile);
 
             if (_jsonInfo.InputDirectory != null && _jsonInfo.InputDirectory != string.Empty)

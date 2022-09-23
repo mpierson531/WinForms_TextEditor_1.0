@@ -4,5 +4,6 @@
     {
         public string ReadFile(string filePath);
         public void WriteFile(string filePath, string content);
+        public StreamWriter CreateFile(string filePath);
     }
 }
