@@ -105,16 +105,14 @@ public partial class TextEditor : Form
 
     private void MainFontItem_Click(object sender, EventArgs e)
     {
-        fontDialog1 = new FontDialog
-        {
-            ShowEffects = true,
-            AllowScriptChange = true,
-            ShowApply = true
-        };
+        FontDialogHelper();
 
         if (fontDialog1.ShowDialog() == DialogResult.OK)
         {
+            Color dialogColor = fontDialog1.Color;
+
             textAreaBox.Font = fontDialog1.Font;
+            textAreaBox.ForeColor = dialogColor;
         }
 
         fontDialog1.Dispose();
@@ -122,61 +120,66 @@ public partial class TextEditor : Form
 
     private void NameFieldFontItem_Click(object sender, EventArgs e)
     {
-        Font dialogFont = null;
         string messageBoxMessage = "Would you like to change both the file name input and the 'File Name:' label? Click 'No' to only change the name field";
         string messageBoxTitle = "Change File Name Field and/or Label";
         MessageBoxButtons messageBoxButtons = MessageBoxButtons.YesNoCancel;
 
-        FontDialog fontDialog = new FontDialog
-        {
-            ShowEffects = true,
-            AllowScriptChange = true
-        };
-
-        //DialogResult messageBoxResult = MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons);
-        //DialogResult fontDialogResult = fontDialog.
+        FontDialogHelper();
 
         switch (MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons), fontDialog1.ShowDialog())
         {
             case (DialogResult.Yes, DialogResult.OK):
-                dialogFont = fontDialog1.Font;
+                Color dialogColor = fontDialog1.Color;
+                Font dialogFont = fontDialog1.Font;
+
                 fileNameField.Font = dialogFont;
                 fileNameLabel.Font = dialogFont;
+                fileNameField.ForeColor = dialogColor;
+                fileNameLabel.ForeColor = dialogColor;
                 break;
 
             case (DialogResult.No, DialogResult.OK):
                 dialogFont = fontDialog1.Font;
+                dialogColor = fontDialog1.Color;
+
                 fileNameField.Font = dialogFont;
+                fileNameField.ForeColor = dialogColor;
                 break;
         };
     }
 
     private void AllFontsItem_Click(object sender, EventArgs e)
     {
-        Font dialogFont;
-        fontDialog1 = new FontDialog
-        {
-            ShowEffects = true,
-            AllowScriptChange = true,
-            ShowApply = true
-        };
+        FontDialogHelper();
+
         if (fontDialog1.ShowDialog() == DialogResult.OK)
         {
-            dialogFont = fontDialog1.Font;
+            Font dialogFont = fontDialog1.Font;
+            Color dialogColor = fontDialog1.Color;
 
             textAreaBox.Font = dialogFont;
-            fileNameLabel.Font = dialogFont;
             fileNameField.Font = dialogFont;
+            textAreaBox.ForeColor = dialogColor;
+            fileNameField.ForeColor = dialogColor;
+
             openButton.Font = dialogFont;
             saveButton.Font = dialogFont;
+            changeDirectoryButton.Font = dialogFont;
+            openButton.ForeColor = dialogColor;
+            saveButton.ForeColor = dialogColor;
+            changeDirectoryButton.ForeColor = dialogColor;
 
             fileToolStripMenuItem.Font = dialogFont;
             settingsToolStripMenuItem.Font = dialogFont;
+            fileToolStripMenuItem.ForeColor = dialogColor;
+            settingsToolStripMenuItem.ForeColor = dialogColor;
 
-            changeDirectoryButton.Font = dialogFont;
-
+            fileNameLabel.Font = dialogFont;
             lineCountLabel.Font = dialogFont;
             characterCountLabel.Font = dialogFont;
+            fileNameLabel.ForeColor = dialogColor;
+            lineCountLabel.ForeColor = dialogColor;
+            characterCountLabel.ForeColor = dialogColor;
         }
     }
 
@@ -205,6 +208,16 @@ public partial class TextEditor : Form
     private void lineCharacterCountFontMenuItem_Click(object sender, EventArgs e)
     {
         FontDialogHelper();
+
+        if (fontDialog1.ShowDialog() == DialogResult.OK)
+        {
+            Font fontFromDialog = fontDialog1.Font;
+            Color dialogColor = fontDialog1.Color;
+            lineCountLabel.Font = fontFromDialog;
+            characterCountLabel.Font = fontFromDialog;
+            lineCountLabel.ForeColor = dialogColor;
+            characterCountLabel.ForeColor = dialogColor;
+        }
     }
 
     private void mouseDrawingButton_Click(object sender, EventArgs e)
@@ -225,20 +238,12 @@ public partial class TextEditor : Form
 
     public void FontDialogHelper()
     {
-        FontDialog fontDialog = new FontDialog()
+        fontDialog1 = new FontDialog()
         {
             ShowEffects = true,
-            ShowApply = true,
             ShowColor = true,
             AllowScriptChange = true,
         };
-
-        if (fontDialog.ShowDialog() == DialogResult.OK)
-        {
-            Font fontFromDialog = fontDialog.Font;
-            lineCountLabel.Font = fontFromDialog;
-            characterCountLabel.Font = fontFromDialog;
-        }
     }
 
     private void Form1_Load(object sender, EventArgs e)
