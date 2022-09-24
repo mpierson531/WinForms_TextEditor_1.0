@@ -295,7 +295,6 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TextEditor";
             this.Text = "Text Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WhenTheFormIsClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

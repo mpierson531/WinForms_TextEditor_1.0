@@ -13,7 +13,7 @@
 
         public void WriteFile(string filePath, string content)
         {
-            using (var fileSave = this.CreateFile($"{filePath}.txt"))
+            using (var fileSave = this.CreateFile($"{filePath}"))
             {
                 fileSave.WriteLine(content);
                 fileSave.Close();

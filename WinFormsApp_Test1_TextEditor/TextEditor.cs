@@ -6,19 +6,20 @@ namespace WinFormsApp_Test1_TextEditor;
 
 public partial class TextEditor : Form
 {
-    private IStorageService _service;
+    private readonly IStorageService _service;
     private IJsonInfo _jsonInfo;
     private string SerializedJson;
     private string inputDirectory;
     private string defaultDirectory;
     private DirectoryInfo directoryInfo;
     private DirectoryInfo defaultDirectoryInfo;
-    private JsonSerializerOptions OptionsForJson = new JsonSerializerOptions() { WriteIndented = true };
+    private readonly JsonSerializerOptions OptionsForJson;
     public TextEditor(LocalStorageService service)
     {
         InitializeComponent();
         _service = service;
         _jsonInfo = new JsonInfo();
+        OptionsForJson = new JsonSerializerOptions() { WriteIndented = true };
     }
 
     private void OpenMenuItem(object sender, EventArgs e)
@@ -31,13 +32,13 @@ public partial class TextEditor : Form
 
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
-            textAreaBox.Text = _service.ReadFile(openFileDialog.FileName);
+            textAreaBox.Text = _service.ReadFile($"{openFileDialog.FileName}.txt");
         }
     }
 
     private void SaveMenuItem(object sender, EventArgs e)
     {
-        _service.WriteFile(fileNameField.Text, textAreaBox.Text);
+        _service.WriteFile($"{fileNameField.Text}.txt", textAreaBox.Text);
         textAreaBox.Text = "Saved " + fileNameField.Text;
     }
 
@@ -54,7 +55,7 @@ public partial class TextEditor : Form
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                _service.WriteFile(saveFileDialog.FileName, textAreaBox.Text);
+                _service.WriteFile($"{saveFileDialog.FileName}", textAreaBox.Text);
                 textAreaBox.Text = "Saved " + fileNameField.Text;
             }
         }
@@ -68,7 +69,7 @@ public partial class TextEditor : Form
             {
                 try
                 {
-                    _service.WriteFile(fileNameField.Text, textAreaBox.Text);
+                    _service.WriteFile($"{fileNameField.Text}.txt", textAreaBox.Text);
                     textAreaBox.Text = "Saved " + fileNameField.Text;
                 }
                 catch (Exception ex) { Interaction.MsgBox("File name field is empty. " + ex.Message); }
@@ -121,35 +122,33 @@ public partial class TextEditor : Form
 
     private void NameFieldFontItem_Click(object sender, EventArgs e)
     {
-        Font dialogFont;
+        Font dialogFont = null;
         string messageBoxMessage = "Would you like to change both the file name input and the 'File Name:' label? Click 'No' to only change the name field";
         string messageBoxTitle = "Change File Name Field and/or Label";
         MessageBoxButtons messageBoxButtons = MessageBoxButtons.YesNoCancel;
 
-        fontDialog1 = new FontDialog
+        FontDialog fontDialog = new FontDialog
         {
             ShowEffects = true,
-            AllowScriptChange = true,
-            ShowApply = true
+            AllowScriptChange = true
         };
 
-        if (MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons) == DialogResult.Yes)
+        //DialogResult messageBoxResult = MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons);
+        //DialogResult fontDialogResult = fontDialog.
+
+        switch (MessageBox.Show(messageBoxMessage, messageBoxTitle, messageBoxButtons), fontDialog1.ShowDialog())
         {
-            if (fontDialog1.ShowDialog() == DialogResult.OK)
-            {
+            case (DialogResult.Yes, DialogResult.OK):
                 dialogFont = fontDialog1.Font;
                 fileNameField.Font = dialogFont;
                 fileNameLabel.Font = dialogFont;
-            }
-        }
-        else
-        {
-            if (fontDialog1.ShowDialog() == DialogResult.OK)
-            {
+                break;
+
+            case (DialogResult.No, DialogResult.OK):
                 dialogFont = fontDialog1.Font;
                 fileNameField.Font = dialogFont;
-            }
-        }
+                break;
+        };
     }
 
     private void AllFontsItem_Click(object sender, EventArgs e)
@@ -194,7 +193,7 @@ public partial class TextEditor : Form
             inputDirectory = Interaction.InputBox(@"Enter a directory", "Change Directory", "");
             _jsonInfo.InputDirectory = inputDirectory;
             SerializedJson = _jsonInfo.Serialize(OptionsForJson);
-            File.WriteAllText(_jsonInfo.DefaultDirectory + @"\config_file.json", SerializedJson);
+            _service.WriteFile(_jsonInfo.DefaultDirectory + @"\config_file.json", SerializedJson);
             Directory.SetCurrentDirectory(_jsonInfo.InputDirectory);
         }
         catch (ArgumentException)
@@ -246,7 +245,6 @@ public partial class TextEditor : Form
     {
         try
         {
-            JsonNode jsonNode;
             directoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             defaultDirectory = @directoryInfo.FullName + @"\Text Editor Files";
             defaultDirectoryInfo = new DirectoryInfo(@defaultDirectory.ToString());
@@ -290,12 +288,5 @@ public partial class TextEditor : Form
         {
             Interaction.MsgBox(ex.Message);
         }
-    }
-
-    private void WhenTheFormIsClosing(object sender, FormClosingEventArgs e)
-    {
-        /*defaultDirectory = Directory.GetCurrentDirectory();
-        Properties.Settings.Default.DefaultDirectory = defaultDirectory;
-        Properties.Settings.Default.Save();*/
     }
 }
