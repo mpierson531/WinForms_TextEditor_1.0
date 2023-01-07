@@ -14,6 +14,7 @@ namespace WinFormsApp_Test1_TextEditor
 
             //FileInterface __fileInterface = new FileInterface();
             //TextEditor textEditor1 = new TextEditor(__fileInterface);
+
             ApplicationConfiguration.Initialize();
 
             Application.Run(new TextEditor(new LocalStorageService()));

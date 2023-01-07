@@ -1,8 +1,13 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace WinFormsApp_Test1_TextEditor
 {
-    public class JsonInfo : IJsonInfo
+    internal class JsonInfo
     {
         private string defaultDirectory;
         private string inputDirectory;
@@ -14,9 +19,9 @@ namespace WinFormsApp_Test1_TextEditor
         {
             return JsonSerializer.Serialize<JsonInfo>(value: this, options);
         }
-        public JsonInfo Deserialize(string jsonContent)
+        public JsonInfo Deserialize(string json)
         {
-            return JsonSerializer.Deserialize<JsonInfo>(jsonContent);
+            return JsonSerializer.Deserialize<JsonInfo>(json);
         }
     }
 }
