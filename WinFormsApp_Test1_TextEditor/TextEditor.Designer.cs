@@ -61,7 +61,6 @@
             this.ThicknessBox = new System.Windows.Forms.ComboBox();
             this.ColorBox = new System.Windows.Forms.ComboBox();
             this.ShapeBox = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.DrawSettingsPanel.SuspendLayout();
@@ -455,18 +454,6 @@
             this.ShapeBox.TextUpdate += new System.EventHandler(this.ShapeBoxChanged);
             this.ShapeBox.SelectedValueChanged += new System.EventHandler(this.ShapeBoxChanged);
             // 
-            // button1
-            // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Enabled = false;
-            this.button1.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(680, 530);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 28);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "Print Drawing";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // ClearButton
             // 
             this.ClearButton.BackColor = System.Drawing.SystemColors.Control;
@@ -490,7 +477,6 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1200, 562);
             this.Controls.Add(this.ClearButton);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.DrawSettingsPanel);
             this.Controls.Add(this.EnableDrawingButton);
             this.Controls.Add(this.ChooseDirectoryButton);
@@ -555,7 +541,6 @@
         private ComboBox ColorBox;
         private ComboBox ShapeBox;
         private Label FilledLabel;
-        private Button button1;
         private CheckBox FilledCheckBox;
         private Button ClearButton;
     }
