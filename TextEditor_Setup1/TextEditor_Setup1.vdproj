@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CC3C7EF40C984D5DA5FB5ED2BCA6A331"
+        "MsmKey" = "8:_778092125E8640ACA84878C8CDF6AC4D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -199,7 +199,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TextEditor_Setup1"
         "ProductCode" = "8:{FE25DD2D-3ACC-42AB-A02F-46A45D5FAA35}"
-        "PackageCode" = "8:{8D96EC72-4F7A-40EB-9B88-78ED75D7F69C}"
+        "PackageCode" = "8:{26FDC86E-D5D7-4E94-9CD3-616E9EE5F5CF}"
         "UpgradeCode" = "8:{87925855-A928-4753-BE8D-0A12DE3F4D9F}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -210,7 +210,7 @@
         "Manufacturer" = "8:Micah.Pierson@outlook.com"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:TextEditor_Setup1"
+        "Title" = "8:Text Editor Setup - Normal"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Micah.Pierson@outlook.com"
         "Keywords" = "8:"
@@ -319,7 +319,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E7763A66B198470396EE5380C6A13E33"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8CE44554B2D946E78AEE7AF8F0C99FAC"
             {
             "Name" = "8:Text Editor 1.0"
             "Arguments" = "8:"
@@ -327,10 +327,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_CC3C7EF40C984D5DA5FB5ED2BCA6A331"
+            "Target" = "8:_778092125E8640ACA84878C8CDF6AC4D"
             "Folder" = "8:_9DCEEFE2A7F649DCBB9173964D883E6B"
             "WorkingFolder" = "8:_BF0E6597E1B248F192B1C6B0500C0F5D"
-            "Icon" = "8:_68679C1FA4F44869964F15CF26C716B4"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
@@ -732,7 +732,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CC3C7EF40C984D5DA5FB5ED2BCA6A331"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_778092125E8640ACA84878C8CDF6AC4D"
             {
             "SourcePath" = "8:..\\WinFormsApp_Test1_TextEditor\\obj\\Debug\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"

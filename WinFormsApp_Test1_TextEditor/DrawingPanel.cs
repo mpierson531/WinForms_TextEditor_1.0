@@ -50,6 +50,7 @@ namespace Text_Editor
         {
             if (DrawingEnabled && DrawingBitmap != null)
             {
+                SetGraphicsQuality(e.Graphics, false);
                 e.Graphics.DrawImage(DrawingBitmap, ClientRectangle.X, ClientRectangle.Y);
             }
         }
@@ -87,20 +88,22 @@ namespace Text_Editor
 
         private void Draw(MouseEventArgs e)
         {
-                SetGraphicsQuality(BitmapGraphics, false);
-                SetPenAndBrush();
+            SetPenAndBrush();
 
-                if (string.IsNullOrEmpty(DrawThickness) || !int.TryParse(DrawThickness.Trim(), out Thickness))
-                {
-                    Thickness = 15;
-                }
+            if (string.IsNullOrEmpty(DrawThickness) || !int.TryParse(DrawThickness.Trim(), out Thickness))
+            {
+                Thickness = 15;
+            }
 
-                DrawToBitmap(e);
-                Invalidate();
+            DrawToBitmap(e);
+            Invalidate();
         }
 
         private void DrawToBitmap(MouseEventArgs e)
         {
+            BitmapGraphics = Graphics.FromImage(DrawingBitmap);
+            SetGraphicsQuality(BitmapGraphics, false);
+            GC.SuppressFinalize(BitmapGraphics);
             int x;
             int y;
             int width;
@@ -117,7 +120,7 @@ namespace Text_Editor
                             y = e.Y;
                             width = Thickness;
                             height = Thickness;
-                            BitmapGraphics.FillEllipse(Brush, x, y , width, height / 3);
+                            BitmapGraphics.FillEllipse(Brush, x, y, width, height / 2);
                             break;
                         case "Circle":
                         case "circle":
@@ -196,6 +199,7 @@ namespace Text_Editor
             }
 
             DisposePenAndBrush();
+            DisposeGraphics(false);
         }
 
         private void SetPenAndBrush()
@@ -259,6 +263,7 @@ namespace Text_Editor
         {
             if (BitmapGraphics != null)
             {
+                BitmapGraphics = Graphics.FromImage(DrawingBitmap);
                 BitmapGraphics.Clear(color);
                 Invalidate();
             }
